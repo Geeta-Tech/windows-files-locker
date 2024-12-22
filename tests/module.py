@@ -13,7 +13,7 @@ def is_admin():
     except:
         return False
 
-def run_as_admin():
+# def run_as_admin():
     """Restart the script with administrative privileges if not already running as admin."""
     if not is_admin():
         ctypes.windll.shell32.ShellExecuteW(
@@ -37,13 +37,13 @@ def load_key():
         return None
     
 
-def encrypt_files_thread(file_paths, key, progress_bar, status_label, root):
+def encrypt_files_thread(file_paths, key, root):
     # Running the encryption in a separate thread
-    thread = threading.Thread(target=encrypt_files, args=(file_paths, key, progress_bar, status_label, root))
+    thread = threading.Thread(target=encrypt_files, args=(file_paths, key, root))
     thread.daemon = True  # Ensure thread ends when the main program ends
     thread.start()
 
-def encrypt_files(file_paths, key, progress_bar, status_label, root):
+def encrypt_files(file_paths, key,  root):
     if key is None:
         return
     fernet = Fernet(key)
@@ -90,7 +90,7 @@ def encrypt_files(file_paths, key, progress_bar, status_label, root):
         messagebox.showinfo("No Supported Files", "No supported files found in the selected directory.")
         return
 
-    progress_bar["maximum"] = len(files_to_process)
+    # progress_bar["maximum"] = len(files_to_process)
 
     # Encrypt each file
     for index, file_path in enumerate(files_to_process):
@@ -102,7 +102,7 @@ def encrypt_files(file_paths, key, progress_bar, status_label, root):
                     # Try to decrypt the file first to check if it is already encrypted
                     fernet.decrypt(file_data)  # If it decrypts successfully, it's already encrypted
                     print(f"File is already encrypted: {file_path}")
-                    status_label.config(text=f"File already encrypted: {os.path.basename(file_path)}")
+                    # status_label.config(text=f"File already encrypted: {os.path.basename(file_path)}")
                     messagebox.showinfo("File Already Encrypted", f"{os.path.basename(file_path)} is already encrypted.")
                     continue  # Skip this file and continue with the next
                 except InvalidToken:
@@ -113,8 +113,8 @@ def encrypt_files(file_paths, key, progress_bar, status_label, root):
                 f.write(encrypted_data)  # Write encrypted data back to the file
 
             # Update progress bar and status label
-            status_label.config(text=f"Encrypting: {os.path.basename(file_path)}")
-            progress_bar["value"] = index + 1
+            # status_label.config(text=f"Encrypting: {os.path.basename(file_path)}")
+            # progress_bar["value"] = index + 1
             # root.update_idletask()  # Ensure the GUI updates during the process
             root.after()  # Ensure the GUI updates during the process
 
@@ -125,16 +125,16 @@ def encrypt_files(file_paths, key, progress_bar, status_label, root):
             continue  # Skip this file and continue with the next
 
     messagebox.showinfo("Success", "Encryption completed successfully!")
-    status_label.config(text="Encryption completed.")
+    # status_label.config(text="Encryption completed.")
 
 
-def decrypt_files_thread(file_paths, key, progress_bar, status_label, root):
+def decrypt_files_thread(file_paths, key, root):
     # Running the decryption in a separate thread
-    thread = threading.Thread(target=decrypt_files, args=(file_paths, key, progress_bar, status_label, root))
+    thread = threading.Thread(target=decrypt_files, args=(file_paths, key, root))
     thread.daemon = True  # Ensure thread ends when the main program ends
     thread.start()
 
-def decrypt_files(file_paths, key, progress_bar, status_label, root):
+def decrypt_files(file_paths, key, root):
     if key is None:
         return
     fernet = Fernet(key)
@@ -162,7 +162,7 @@ def decrypt_files(file_paths, key, progress_bar, status_label, root):
         return
 
     # Set the maximum value of the progress bar
-    progress_bar["maximum"] = len(files_to_process)
+    # progress_bar["maximum"] = len(files_to_process)
 
     # Decrypt each file
     for index, file_path in enumerate(files_to_process):
@@ -174,8 +174,8 @@ def decrypt_files(file_paths, key, progress_bar, status_label, root):
                 f.write(decrypted_data)  # Write the decrypted data back to the file
 
             # Update progress bar and status label
-            status_label.config(text=f"Decrypting: {os.path.basename(file_path)}")
-            progress_bar["value"] = index + 1
+            # status_label.config(text=f"Decrypting: {os.path.basename(file_path)}")
+            # progress_bar["value"] = index + 1
             # root.update_idletasks()  # Ensure the GUI updates during the process
             root.after()  # Ensure the GUI updates during the process
 
@@ -184,7 +184,7 @@ def decrypt_files(file_paths, key, progress_bar, status_label, root):
         except InvalidToken:
             # If decryption fails, it's likely not encrypted
             print(f"File is already decrypted: {file_path}")
-            status_label.config(text=f"File already decrypted: {os.path.basename(file_path)}")
+            # status_label.config(text=f"File already decrypted: {os.path.basename(file_path)}")
             messagebox.showinfo("File Already Decrypted", f"{os.path.basename(file_path)} is already decrypted.")
             continue  # Skip this file and continue
 
@@ -193,7 +193,7 @@ def decrypt_files(file_paths, key, progress_bar, status_label, root):
             continue  # Skip this file and continue with the next
 
     messagebox.showinfo("Success", "Decryption completed successfully!")
-    status_label.config(text="Decryption completed.")
+    # status_label.config(text="Decryption completed.")
 
 
 def select_files_encryption():
@@ -206,7 +206,7 @@ def select_files_encryption():
     )
 
     if file_paths:
-        encrypt_files(file_paths, key,progress_bar, status_label,root)
+        encrypt_files(file_paths, key,root)
 
 def select_files_decryption():
     key = load_key()  # Load encryption key
@@ -218,19 +218,19 @@ def select_files_decryption():
     )
 
     if file_paths:
-        decrypt_files(file_paths, key,progress_bar, status_label,root)
+        decrypt_files(file_paths, key,root)
 
 
 # Generate the key if it doesn't exist
 generate_key()
 
 # Ensure the script is runu with administration priveleges
-run_as_admin()
+# run_as_admin()
 
 # Main application window
 root = tk.Tk()
 root.title("Encrypt/Decrypt Files")
-root.geometry("300x100")
+root.geometry("300x200")
 
 lock_btn = tk.Button(root, text="Select files or folder for encryption", command=select_files_encryption, width=30)
 lock_btn.pack(pady=10)
@@ -238,10 +238,13 @@ lock_btn.pack(pady=10)
 lock_btn = tk.Button(root, text="Select files or folder for decryption", command=select_files_decryption, width=30)
 lock_btn.pack(pady=10)
 
-progress_bar = ttk.Progressbar(root, orient="horizontal", length=300, mode="determinate")
-progress_bar.pack(pady=10)
+# progress_bar = ttk.Progressbar(root, orient="horizontal", length=300, mode="determinate")
+# progress_bar.pack(pady=10)
 
-status_label = tk.Label(root, text="", font=("Arial", 10))
-status_label.pack(pady=10)
+# status_label = tk.Label(root, text="", font=("Arial", 10))
+# status_label.pack(pady=10)
 
 root.mainloop()
+
+# if __name__ == "__main__":
+#     run_as_admin()
