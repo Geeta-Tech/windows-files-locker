@@ -1,6 +1,6 @@
 # Windows File Encryption and Decryption
 
-A Python-based tool to easily encrypt and decrypt files with strong AES-256 encryption. This project is designed to help users protect their sensitive files by encrypting them and then securely decrypting them when needed. 
+A Python-based tool to easily encrypt and decrypt files with strong encryption. This project is designed to help users protect their sensitive files by encrypting them and then securely decrypting them when needed. 
 
 ## Features
 - Encrypt files with a passphrase (basic encryption).
@@ -42,7 +42,7 @@ encrypt_files(file_path, key)
 
 ### Decryption
 
-- To encrypt a file, use the `decrypt_files` function. The function will decrypt one or more files and save the encrypted version.
+- To encrypt a file, use the `decrypt_files` function. The function will decrypt one or more files and save the decrypted version.
 
 `Example:`
 
@@ -50,7 +50,7 @@ encrypt_files(file_path, key)
 from module_name import decrypt_files
 
 file_path = 'path/to/file1.pdf'  # file to decrypt
-key = b'your-secret-key-here'  # key for encryption (must be 32 bytes)
+key = b'your-secret-key-here'  # key for decryption (must be 32 bytes)
 # Automatically generated be decrypt_files
 decrypt_files(file_path, key)
 ```
@@ -62,6 +62,8 @@ decrypt_files(file_path, key)
      - `pdf`
      - `docx`
      - `jpg`
+     - `mp4`
+     - `mkv`
 - Files with unsupported extensions will not be processed.
 
 
@@ -87,5 +89,5 @@ Here are ways you can help:
 # Contact
 >For any questions or suggestions, please contact the project maintainer at 
 
-[email](geetatech.dev@gmail.com)
+[email](mailto:geetatech.dev@gmail.com)
 
